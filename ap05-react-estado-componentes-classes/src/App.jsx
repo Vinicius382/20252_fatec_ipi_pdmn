@@ -1,17 +1,42 @@
 import React from "react"
 import Gato from "./Gato"
-class App extends React.Component{
+import EstacaoClimatica from "./EstacaoClimatica"
+import Loading from "./Loading"
+class App extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state = {
-      latitude: null,
-      longitude: null,
-      estacao: null,
-      data: null,
-      icone: null,
-      mensagemDeErro: null    
-    }
+    // this.state = {
+    //   latitude: null,
+    //   longitude: null,
+    //   estacao: null,
+    //   data: null,
+    //   icone: null,
+    //   mensagemDeErro: null    
+    // }
+    console.log('constructor')
+  }
+
+  state = {
+    longitude: null,
+    latitude: null,
+    estacao: null,
+    data: null,
+    icone: null,
+    mensagemDeErro: null
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount')
+    this.obterLocalizacao()
+  }
+
+  componentDidUpdate() {
+    console.log('componentDidUpdate')
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount')
   }
 
   icones = {
@@ -36,9 +61,9 @@ class App extends React.Component{
       return estaNoSul ? "Inverno" : "Verão"
     //fazer mais dois ifs
     //e terminar com um ternario sem if
-    if(dataAtual >= d2 && dataAtual < d3)
+    if (dataAtual >= d2 && dataAtual < d3)
       return estaNoSul ? "Primavera" : "Outono"
-    if(dataAtual >= d3 || dataAtual < d1)
+    if (dataAtual >= d3 || dataAtual < d1)
       return estaNoSul ? "Verão" : "Inverno"
     return estaNoSul ? "Outono" : "Primavera"
 
@@ -55,52 +80,45 @@ class App extends React.Component{
           longitude: position.coords.longitude,
           estacao: estacao,
           data: dataAtual.toLocaleString(),
-          icone: icone  
+          icone: icone
         })
       },
       (erro) => {
         console.log(erro)
-        this.setState({mensagemDeErro: 'Tente novamente mais tarde'})
+        this.setState({ mensagemDeErro: 'Tente novamente mais tarde' })
       }
-    )  
+    )
   }
 
-  render(){
-    console.log(this.state)
-    return(
+  render() {
+    console.log('render')
+    return (
       <div className="container mt-2">
         <div className="row">
           <div className="col-12">
-            <Gato tamanho="2"/>
+            <Gato tamanho="2" />
             <Gato tamanho="2" direcao="horizontal" />
           </div>
         </div>
         {/* .card>.card-body */}
-        <div className="card">
-          <div className="card-body">
-            {/* .d-flex.border.rounded.mb-2 */}
-            <div 
-              className="d-flex align-items-center border rounded mb-2"
-              style={{height: '6rem'}}>
-                <i className={`fa-solid fa-4x fa-${this.state.icone}`}></i>
-                <p className="w-75 text-center ms-3 fs-1 ">{this.state.estacao}</p>
-            </div>
-            <div>
-              <p className="text-center">
-                {
-                  this.state.latitude ? 
-                  `Coordenadas: ${this.state.latitude},${this.state.longitude}. Data: ${this.state.data}` :
-                  this.state.mensagemDeErro ? 
-                  this.state.mensagemDeErro :
-                  `Clique no botão para saber a sua estação climática`
-                }
-              </p>
-            </div>
-            <button
-              onClick={this.obterLocalizacao}
-              className="btn btn-outline-primary w-100 mt-2">
-              Qual a minha estação?
-            </button>
+        <div className="row">
+          <div className="col-12">
+            {
+              (!this.state.latitude && !this.state.mensagemDeErro) ?
+                <Loading />
+                :
+              
+              this.state.mensagemDeErro ? 
+              <p className="border rounded p-2 fs-1 text-center">É preciso da permissão de acesso a localização.
+              Atualize a página e tente de novo, ajustando a configuração do seu navegador.</p> :
+            <EstacaoClimatica
+              latitude={this.state.latitude}
+              longitude={this.state.longitude}
+              estacao={this.state.estacao}
+              icone={this.state.icone}
+              obterLocalizacao={this.obterLocalizacao}
+            />
+  }
           </div>
         </div>
       </div>
