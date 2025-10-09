@@ -2,9 +2,9 @@ import React from "react"
 import Gato from "./Gato"
 import EstacaoClimatica from "./EstacaoClimatica"
 import Loading from "./Loading"
-class App extends React.Component {
+class App extends React.Component{
 
-  constructor(props) {
+  constructor(props){
     super(props)
     // this.state = {
     //   latitude: null,
@@ -18,24 +18,24 @@ class App extends React.Component {
   }
 
   state = {
-    longitude: null,
     latitude: null,
+    longitude: null,
     estacao: null,
     data: null,
     icone: null,
     mensagemDeErro: null
   }
 
-  componentDidMount() {
+  componentDidMount(){
     console.log('componentDidMount')
     this.obterLocalizacao()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(){
     console.log('componentDidUpdate')
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(){
     console.log('componentWillUnmount')
   }
 
@@ -61,12 +61,11 @@ class App extends React.Component {
       return estaNoSul ? "Inverno" : "Verão"
     //fazer mais dois ifs
     //e terminar com um ternario sem if
-    if (dataAtual >= d2 && dataAtual < d3)
+    if(dataAtual >= d2 && dataAtual < d3)
       return estaNoSul ? "Primavera" : "Outono"
-    if (dataAtual >= d3 || dataAtual < d1)
+    if(dataAtual >= d3 || dataAtual < d1)
       return estaNoSul ? "Verão" : "Inverno"
     return estaNoSul ? "Outono" : "Primavera"
-
   }
 
   obterLocalizacao = () => {
@@ -80,24 +79,24 @@ class App extends React.Component {
           longitude: position.coords.longitude,
           estacao: estacao,
           data: dataAtual.toLocaleString(),
-          icone: icone
+          icone: icone  
         })
       },
       (erro) => {
         console.log(erro)
-        this.setState({ mensagemDeErro: 'Tente novamente mais tarde' })
+        this.setState({mensagemDeErro: 'Tente novamente mais tarde'})
       }
-    )
+    )  
   }
 
-  render() {
+  render(){
     console.log('render')
-    return (
+    return(
       <div className="container mt-2">
         <div className="row">
           <div className="col-12">
-            <Gato tamanho="2" />
-            <Gato tamanho="2" direcao="horizontal" />
+            <Gato tamanho="3"/>
+            <Gato tamanho="3" direcao="horizontal" />
           </div>
         </div>
         {/* .card>.card-body */}
@@ -105,20 +104,21 @@ class App extends React.Component {
           <div className="col-12">
             {
               (!this.state.latitude && !this.state.mensagemDeErro) ?
-                <Loading />
-                :
-              
-              this.state.mensagemDeErro ? 
-              <p className="border rounded p-2 fs-1 text-center">É preciso da permissão de acesso a localização.
-              Atualize a página e tente de novo, ajustando a configuração do seu navegador.</p> :
-            <EstacaoClimatica
-              latitude={this.state.latitude}
-              longitude={this.state.longitude}
-              estacao={this.state.estacao}
-              icone={this.state.icone}
-              obterLocalizacao={this.obterLocalizacao}
-            />
-  }
+                <Loading texto='Por favor, libere o acesso à sua localização.'/>
+              :
+              this.state.mensagemDeErro ?
+              // p.border.rounded.p-2.fs-1.text-center
+              <p className="border rounded p-2 fs-1 text-center">
+                É preciso dar permissão de acesso à localização. Atualize a página e tente de novo, ajustando a configuração no seu navegador.
+              </p>
+              :
+              <EstacaoClimatica
+                latitude={this.state.latitude}
+                longitude={this.state.longitude}
+                estacao={this.state.estacao}
+                icone={this.state.icone}
+                obterLocalizacao={this.obterLocalizacao} />
+            }
           </div>
         </div>
       </div>
